@@ -47,8 +47,18 @@ où $G$ est l'énergie du système, prenant en compte la protéine et le ligand.
 
 ## 3. Exploration dans l'espace des Séquences de la GSTD1
 
-Additionellement, les GSTs possèdent un acide aminé dit "actif" (Serine n°10 pour la GSTD1) qui interagit avec l'Hydrogène du GSH pour faciliter sa supture de liaison covalente avec le Souffre. Le rôle des autres acides aminés du site actif est aujourd'hui beaucoup moins documenté 
+Les acides-aminés sont les composants élémentaires des chaînes protéiques. Il en existe 21 différents dans le domaine du vivant et la séquence précise d'acides aminés définit aussi bien sa structure que sa fonction. Réaliser un **design** de protéine artificiel revient à trouver une ou plusieurs séquences capable de se replier et ayant des propriété physico-chimiques contrôlée. Ce travail nécessite d'explorer un ensemble de séquence potentiellement gigantesque. La GSTD1 comporte par exemple 209 acides aminés. L'ensemble des séquences ayant une telle longueur est donc de $21^{209} \approx 2 \times 10^{276}$ séquences différentes. 
+
+![image](img/21_acides_aminés.png)
+*Source: Wikipedia.org*
+
+Certaines application dites *de novo* cherchent de nouvelles structures de protéines et sont donc contraintes d'explorer un tel espace. Dans ce travail, nous nous interessons à l'optimisation de l'affinité entre une GST et son ligand. Modifier des acides aminés qui ne se trouvent pas dans le site de fixation est donc une approche inefficace puisque l'écrasante majorité des acides aminés de la protéine n'interagissent que très peu avec le ligand. Additionellement, les GSTs possèdent un acide aminé dit "actif" (Serine n°10 pour la GSTD1) qui interagit avec l'Hydrogène du GSH pour faciliter la supture de sa liaison covalente avec le Souffre. Il est connu dans la littérature que des modifications de cet acide aminé entraine une baisse significative de l'efficacité de l'enzyme. Nous n'appliqueront donc des mutations que pour les résidus du site de fixation du GSH précédemment indentifiés.
 
 ![image](img/GSH_conjuguation.svg)
 
+On caractérise l'impact d'une mutation par la quantité
+$$
+    \Delta\Delta G = \Delta G_\text{mutant} - \Delta G_\text{natif}
+$$
 
+Si $\Delta\Delta G < 0$, l'affinité Protéine-Ligand du mutant est plus petite que celle du système natif, la mutation est donc favorable. À l'inverse, une mutation entraînant un $\Delta\Delta G \ge 0$ est défavorable. 
