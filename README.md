@@ -52,13 +52,26 @@ Les acides-aminés sont les composants élémentaires des chaînes protéiques. 
 ![image](img/21_acides_aminés.png)
 *Source: Wikipedia.org*
 
-Certaines application dites *de novo* cherchent de nouvelles structures de protéines et sont donc contraintes d'explorer un tel espace. Dans ce travail, nous nous interessons à l'optimisation de l'affinité entre une GST et son ligand. Modifier des acides aminés qui ne se trouvent pas dans le site de fixation est donc une approche inefficace puisque l'écrasante majorité des acides aminés de la protéine n'interagissent que très peu avec le ligand. Additionellement, les GSTs possèdent un acide aminé dit "actif" (Serine n°10 pour la GSTD1) qui interagit avec l'Hydrogène du GSH pour faciliter la supture de sa liaison covalente avec le Souffre. Il est connu dans la littérature que des modifications de cet acide aminé entraine une baisse significative de l'efficacité de l'enzyme. Nous n'appliqueront donc des mutations que pour les résidus du site de fixation du GSH précédemment indentifiés.
+Certaines application dites *de novo* cherchent de nouvelles structures de protéines et sont donc contraintes d'explorer un tel espace. Dans ce travail, nous nous interessons à l'optimisation de l'affinité entre une GST et son ligand. Modifier des acides aminés qui ne se trouvent pas dans le site de fixation est donc une approche inefficace puisque l'écrasante majorité des acides aminés de la protéine n'interagissent que très peu avec le ligand. Additionellement, les GSTs possèdent un acide aminé dit "actif" (Serine n°10 pour la GSTD1) qui interagit avec l'Hydrogène du GSH pour faciliter la supture de sa liaison covalente avec le Souffre. Il est connu dans la littérature que des modifications de cet acide aminé entraine une baisse significative de l'efficacité de l'enzyme. Nous n'appliqueront donc des mutations que pour les résidus du site de fixation du GSH précédemment indentifiés en excluant la Ser10.
 
 ![image](img/GSH_conjuguation.svg)
 
 On caractérise l'impact d'une mutation par la quantité
 $$
-    \Delta\Delta G = \Delta G_\text{mutant} - \Delta G_\text{natif}
+    \Delta\Delta G = \Delta G_{\text{mutant}} - \Delta G_{\text{natif}}
 $$
 
-Si $\Delta\Delta G < 0$, l'affinité Protéine-Ligand du mutant est plus petite que celle du système natif, la mutation est donc favorable. À l'inverse, une mutation entraînant un $\Delta\Delta G \ge 0$ est défavorable. 
+Si $\Delta\Delta G \ge 0$, l'affinité Protéine-Ligand du mutant est plus grande (moins négative) que celle du système natif, la mutation est donc défavorable. À l'inverse, une mutation entraînant un $\Delta\Delta G < 0$ est favorable !
+
+- Combien de mutation **unique** existe-t-il ? 
+
+- À l'aide du script `rosetta_mutate.ipynb`, testez certaines de ces mutations et identifiez si elles sont favorables ou non.
+
+- Combien de **paire** de mutation existe-t-il (c'est à dire combien d'enchainement de deux mutation existe-t-il) ?
+
+Dès que l'on cherche à explorer des combinaisons de mutations, le nombre de possibilité augemente de manière significative. Il nous est donc impossible d'explorer l'ensemble de l'espace des séquences, même une fois ce dernier réduit. Pour contourner cette difficulté, une stratégie possible est d'utilisé des méthodes d'échantillonage appelée [méthode de Monte-Carlo par Chaîne de Markov](https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Monte-Carlo_par_cha%C3%AEnes_de_Markov) (MCMC). On commence par évaluer un $\Delta G_{\text{référence}}$ qui représente pour l'instant l'affinité Protéine-Ligand du système natif. Puis, pour un nombre pré-défini d'itération, on tire au hasard une mutation parmis l'ensemble de mutation unique autorisé, et l'on évalue ainsi le $\Delta G_{\text{mutant}}$ associé à cette mutation ainsi que le $\Delta \Delta G$. Si jamais la mutation est favorable ($\Delta \Delta G \le 0$), la mutation est dite **acceptée** et le mutant devient la nouvelle référence. Dans le cas contraire, la mutation peut être acceptée ou non avec une probabilité donnée par le critère de Métropolis:
+$$
+    P_{\text{acceptation}} = \exp \frac{-\Delta\Delta G}{k_BT}
+$$
+
+Ainsi, si $\Delta \Delta G$ est très grand devant le paramètre $k_BT$, alors la mutation est rejeté avec une quasi-certitude. Cependant, une mutation faiblement perturbante pourra tout de même être acceptée avec une probabilité non-négligeable. 
