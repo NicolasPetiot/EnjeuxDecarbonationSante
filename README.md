@@ -15,7 +15,9 @@ L'ensemble des structures de protéines résolues expérimentalement est répert
 
 - Identifiez la séquence d'acides aminés de la GSTD1 de *Drosophila melanogaster*, ainsi que la/les éventuelle(s) structure(s) expérimentale(s).
 
-- Réalisez, à l'aide d'[AlphaFold](https://alphafoldserver.com/), une prédiction de structure pour cette séquence de protéine.
+- Complétez le fichier `FASTA/DmGST_Delta.fasta` et réalisez un [alignement de séquence multiple](https://www.ebi.ac.uk/jdispatcher/msa/clustalo).
+
+- Réalisez, à l'aide d'[AlphaFold](https://alphafoldserver.com/), une prédiction de structure de GSTD1.
 
 **Attention** : la GSTD1 est homodimérique. Cela signifie que sa structure contient deux copies de la même chaîne protéique.
 
@@ -69,12 +71,16 @@ Si $\Delta \Delta G \ge 0$, l'affinité protéine-ligand du mutant est plus gran
 
 - Combien de **paires** de mutations existent-elles (c'est-à-dire combien d'enchaînements de deux mutations existe-t-il) ?
 
+## 4. Simulations de Monte-Carlo dans l'Espace des Séquences de la GSTD1:
+
 Dès que l'on cherche à explorer des combinaisons de mutations, le nombre de possibilités augmente de manière significative. Il nous est donc impossible d'explorer l'ensemble de l'espace des séquences, même une fois ce dernier réduit. Pour contourner cette difficulté, une stratégie possible est d'utiliser des méthodes d'échantillonnage appelées [méthodes de Monte Carlo par chaînes de Markov](https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Monte-Carlo_par_cha%C3%AEnes_de_Markov) (MCMC). On commence par évaluer un $\Delta G_{\text{référence}}$, qui représente pour l'instant l'affinité protéine-ligand du système natif. Puis, pour un nombre prédéfini d'itérations, on tire au hasard une mutation parmi l'ensemble des mutations uniques autorisées, et l'on évalue ainsi le $\Delta G_{\text{mutant}}$ associé à cette mutation, ainsi que le $\Delta \Delta G$. Si la mutation est favorable ($\Delta \Delta G \le 0$), elle est dite **acceptée** et le mutant devient la nouvelle référence. Dans le cas contraire, la mutation peut être acceptée ou non avec une probabilité donnée par le critère de Metropolis :
 $$
     P_{\text{acceptation}} = \exp \left( \frac{-\Delta \Delta G}{k_B T} \right)
 $$
 
 Ainsi, si $\Delta \Delta G$ est très grand devant le paramètre $k_B T$, alors la mutation est rejetée avec une quasi-certitude. Cependant, une mutation faiblement perturbante pourra tout de même être acceptée avec une probabilité non négligeable.
+
+- À partir de l'alignement de séquence réalisé en début de séance et des acides aminés précédemment identifiés dans le site de fixation du GSH, définissez l'ensemble des mutations autorisées: `ALLOWED_MUTATIONS`.
 
 - À partir du script `rosetta_MCSS.ipynb`, réalisez une simulation de Monte Carlo dans l'espace des séquences (MCSS) de la GSTD1.
 
